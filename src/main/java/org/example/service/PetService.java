@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.example.entity.Pet;
+import org.example.entity.User;
 import org.example.exception.NotFoundException;
 import org.example.exception.NotValidException;
 import org.example.model.PetDto;
@@ -14,7 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PetService {
-    private HashMap<Long, PetDto> petHashMap = new HashMap<>();
+    private HashMap<Long, Pet> petHashMap = new HashMap<>();
     private UserService userService;
 
     @Autowired
@@ -22,7 +24,7 @@ public class PetService {
         this.userService = userService;
     }
 
-    public PetDto getPetById(Long id) {
+    public Pet getPetById(Long id) {
         if (id == null || id < 0) {
             throw new NotValidException("Pet id must be positive");
         }
@@ -32,11 +34,11 @@ public class PetService {
         return petHashMap.getOrDefault(id, null);
     }
 
-    public List<PetDto> getAllPets() {
+    public List<Pet> getAllPets() {
         return new ArrayList<>(petHashMap.values());
     }
 
-    public PetDto createPet(PetDto petDto) {
+    public Pet createPet(Pet petDto) {
         if (petHashMap.containsKey(petDto.getId())) {
             throw new NotValidException("Is already exist");
         }
@@ -50,13 +52,13 @@ public class PetService {
             throw new NotValidException("User id must be positive");
         }
         petHashMap.put(petDto.getId(), petDto);
-        UserDto user = userService.getUserById(petDto.getUserId());
+        User user = userService.getUserById(petDto.getUserId());
         user.getPets().add(petDto);
         userService.putUser(user);
         return petDto;
     }
 
-    public PetDto putPet(PetDto petDto) {
+    public Pet putPet(Pet petDto) {
         if (petDto.getId() == null || petDto.getId() < 0) {
             throw new NotValidException("Pet id must be positive");
         }
@@ -66,12 +68,12 @@ public class PetService {
         if (petDto.getUserId() == null || petDto.getUserId() < 0) {
             throw new NotValidException("User id must be positive");
         }
-        PetDto pet = petHashMap.get(petDto.getId());
+        Pet pet = petHashMap.get(petDto.getId());
         pet.setName(petDto.getName());
-        UserDto user = userService.getUserById(petDto.getUserId());
+        User user = userService.getUserById(petDto.getUserId());
         //pet.setUserId(userId);
         petHashMap.put(petDto.getId(), pet);
-        List<PetDto> updatePets = user.getPets()
+        List<Pet> updatePets = user.getPets()
                 .stream()
                 .map(p -> p.getId().equals(petDto.getId()) ? pet : p)
                 .toList();
@@ -86,7 +88,7 @@ public class PetService {
             throw new NotValidException("Pet id must be positive");
         }
         petHashMap.remove(id);
-        UserDto user = userService.getUserById(userId);
+        User user = userService.getUserById(userId);
         user.getPets().removeIf(petDto -> petDto.getId().equals(id));
         userService.putUser(user);
 
@@ -97,7 +99,7 @@ public class PetService {
             throw new NotValidException("Pet name is required");
         }
         petHashMap.entrySet().removeIf(e -> e.getValue().getName().equals(name) && e.getValue().getUserId().equals(userId));
-        UserDto user = userService.getUserById(userId);
+        User user = userService.getUserById(userId);
         user.getPets().removeIf(petDto -> petDto.getName().equals(name));
         userService.putUser(user);
     }

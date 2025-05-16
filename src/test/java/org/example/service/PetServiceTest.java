@@ -1,5 +1,7 @@
 package org.example.service;
 
+import org.example.entity.Pet;
+import org.example.entity.User;
 import org.example.model.PetDto;
 import org.example.model.UserDto;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -19,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @AutoConfigureMockMvc
 @SpringBootTest
 class PetServiceTest {
@@ -34,8 +37,8 @@ class PetServiceTest {
 
     @Test
     void getPetById() throws Exception {
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 
@@ -47,27 +50,27 @@ class PetServiceTest {
                 .getResponse()
                 .getContentAsString();
 
-        var petDto = objectMapper.readValue(jsonResponse, PetDto.class);
+        var petDto = objectMapper.readValue(jsonResponse, Pet.class);
         Assertions.assertEquals(petDto.getName(), pet.getName());
     }
 
     @Test
     void getAllPets() throws Exception {
-        PetDto pet1 = new PetDto(1L, "name1", 1L);
-        PetDto pet2 = new PetDto(2L, "name2", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet1 = new Pet(1L, "name1", 1L);
+        Pet pet2 = new Pet(2L, "name2", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet1);
         petService.createPet(pet2);
 
-        List<PetDto> petsDtoList = List.of(pet1, pet2);
+        List<Pet> petsDtoList = List.of(pet1, pet2);
 
         var jsonResponse = mvc.perform(get("/api/pets")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<PetDto> petsDto = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+        List<Pet> petsDto = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
         Assertions.assertEquals(2, petsDto.size());
         Assertions.assertEquals(petsDtoList, petsDto);
 
@@ -75,8 +78,8 @@ class PetServiceTest {
 
     @Test
     void createPet() throws Exception{
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
 
         String petJson = objectMapper.writeValueAsString(pet);
@@ -88,14 +91,14 @@ class PetServiceTest {
                 .getResponse()
                 .getContentAsString();
 
-        var petDto = objectMapper.readValue(jsonResponse, PetDto.class);
+        var petDto = objectMapper.readValue(jsonResponse, Pet.class);
         Assertions.assertEquals(petDto.getName(), pet.getName());
     }
 
     @Test
     void putPet() throws Exception{
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 
@@ -108,15 +111,15 @@ class PetServiceTest {
                 .getResponse()
                 .getContentAsString();
 
-        var petDto = objectMapper.readValue(jsonResponse, PetDto.class);
+        var petDto = objectMapper.readValue(jsonResponse, Pet.class);
         Assertions.assertEquals(petDto.getName(), pet.getName());
     }
 
     @Test
     void deletePetById() throws Exception{
 
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 
@@ -132,8 +135,8 @@ class PetServiceTest {
 
     @Test
     void deletePetByName() throws Exception{
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 

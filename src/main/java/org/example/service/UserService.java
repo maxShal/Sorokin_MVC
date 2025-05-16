@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.entity.User;
 import org.example.exception.NotFoundException;
 import org.example.exception.NotValidException;
 import org.example.model.PetDto;
@@ -13,13 +14,13 @@ import java.util.List;
 @Service
 public class UserService
 {
-    private HashMap<Long, UserDto> userHashMap = new HashMap<>();
+    private HashMap<Long, User> userHashMap = new HashMap<>();
 
-    public HashMap<Long, UserDto> getUserHashMap() {
+    public HashMap<Long, User> getUserHashMap() {
         return userHashMap;
     }
 
-    public UserDto getUserById(Long id)
+    public User getUserById(Long id)
     {
         if (id == null || id < 0) {
             throw new NotValidException("User id must be positive");
@@ -30,12 +31,12 @@ public class UserService
         return userHashMap.getOrDefault(id, null);
     }
 
-    public List<UserDto> getAllUsers()
+    public List<User> getAllUsers()
     {
         return new ArrayList<>(userHashMap.values());
     }
 
-    public UserDto createUser(UserDto userDto)
+    public User createUser(User userDto)
     {
         if(userHashMap.containsKey(userDto.getId())){
             throw new NotValidException("Already exists");
@@ -52,12 +53,12 @@ public class UserService
         if (userDto.getAge() == null || userDto.getAge() < 0) {
             throw new NotValidException("Age id must be positive");
         }
-        UserDto user = new UserDto(userDto.getId(), userDto.getName(), userDto.getEmail(), userDto.getAge(), userDto.getPets());
+        User user = new User(userDto.getId(), userDto.getName(), userDto.getEmail(), userDto.getAge(), userDto.getPets());
         userHashMap.put(user.getId(), user);
         return user;
     }
 
-    public UserDto putUser(UserDto userDto)
+    public User putUser(User userDto)
     {
         if (userDto.getId() == null || userDto.getId() < 0) {
             throw new NotValidException("User id must be positive");
@@ -74,7 +75,7 @@ public class UserService
         if (userDto.getAge() == null || userDto.getAge() < 0) {
             throw new NotValidException("Age id must be positive");
         }
-        UserDto user = userHashMap.get(userDto.getId());
+        User user = userHashMap.get(userDto.getId());
         user.setAge(userDto.getAge());
         user.setEmail(userDto.getEmail());
         user.setName(userDto.getName());

@@ -1,5 +1,8 @@
 package org.example.controller;
 
+import org.example.entity.Pet;
+import org.example.entity.User;
+import org.example.mapper.PetDtoMapper;
 import org.example.model.PetDto;
 import org.example.model.UserDto;
 import org.example.service.PetService;
@@ -32,12 +35,14 @@ class PetControllerTest {
     @Autowired
     private MockMvc mvc;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private PetDtoMapper mapper;
 
 
     @Test
     void getPetById() throws Exception {
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 
@@ -49,27 +54,27 @@ class PetControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        var petDto = objectMapper.readValue(jsonResponse, PetDto.class);
+        var petDto = objectMapper.readValue(jsonResponse, Pet.class);
         Assertions.assertEquals(petDto.getName(), pet.getName());
     }
 
     @Test
     void getAllPets() throws Exception {
-        PetDto pet1 = new PetDto(1L, "name1", 1L);
-        PetDto pet2 = new PetDto(2L, "name2", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet1 = new Pet(1L, "name1", 1L);
+        Pet pet2 = new Pet(2L, "name2", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet1);
         petService.createPet(pet2);
 
-        List<PetDto> petsDtoList = List.of(pet1, pet2);
+        List<Pet> petsDtoList = List.of(pet1, pet2);
 
         var jsonResponse = mvc.perform(get("/api/pets")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        List<PetDto> petsDto = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+        List<Pet> petsDto = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
         Assertions.assertEquals(2, petsDto.size());
         Assertions.assertEquals(petsDtoList, petsDto);
 
@@ -78,7 +83,7 @@ class PetControllerTest {
     @Test
     void createPet() throws Exception{
         PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
 
         String petJson = objectMapper.writeValueAsString(pet);
@@ -97,11 +102,12 @@ class PetControllerTest {
     @Test
     void putPet() throws Exception{
         PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
-        petService.createPet(pet);
+        Pet pe = mapper.toDto(pet);
+        petService.createPet(pe);
 
-        String petJson = objectMapper.writeValueAsString(pet);
+        String petJson = objectMapper.writeValueAsString(pe);
         var jsonResponse = mvc.perform(put("/api/pets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(petJson))
@@ -110,15 +116,15 @@ class PetControllerTest {
                 .getResponse()
                 .getContentAsString();
 
-        var petDto = objectMapper.readValue(jsonResponse, PetDto.class);
+        var petDto = objectMapper.readValue(jsonResponse, Pet.class);
         Assertions.assertEquals(petDto.getName(), pet.getName());
     }
 
     @Test
     void deletePetById() throws Exception{
 
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 
@@ -134,8 +140,8 @@ class PetControllerTest {
 
     @Test
     void deletePetByName() throws Exception{
-        PetDto pet = new PetDto(1L, "name", 1L);
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, new ArrayList<>());
+        Pet pet = new Pet(1L, "name", 1L);
+        User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
         petService.createPet(pet);
 

@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import org.example.entity.User;
+import org.example.mapper.UserDtoMapper;
 import org.example.model.UserDto;
 import org.example.service.UserService;
 import jakarta.validation.Valid;
@@ -15,33 +17,37 @@ import java.util.List;
 @RequestMapping("/api/users")
 public class UserController {
     private final UserService userService;
+    private final UserDtoMapper mapper;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserDtoMapper mapper) {
         this.userService = userService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserById( @PathVariable Long id)
+    public ResponseEntity<User> getUserById( @PathVariable Long id)
     {
         return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
     }
 
 
     @GetMapping
-    public ResponseEntity<List<UserDto>> getUsers()
+    public ResponseEntity<List<User>> getUsers()
     {
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user)
+    public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto)
     {
+        var user = mapper.userDto(userDto);
         return new ResponseEntity<>(userService.createUser(user),HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<UserDto> putUser(@Valid @RequestBody UserDto user)
+    public ResponseEntity<User> putUser(@Valid @RequestBody UserDto userDto)
     {
+        var user = mapper.userDto(userDto);
         return new ResponseEntity<>(userService.putUser(user),HttpStatus.OK);
     }
 

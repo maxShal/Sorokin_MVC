@@ -1,26 +1,26 @@
-package org.example.model;
+package org.example.entity;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.example.entity.Pet;
+import org.example.model.PetDto;
 
 import java.util.List;
 import java.util.Objects;
 
-public class UserDto {
-    @NotNull
+public class User {
+
     private Long id;
-    @NotBlank
+
     private String name;
-    @Email
+
     private String email;
-    @Min(value = 12, message = "You mast be older 12.")
+
     private Integer age;
     private List<Pet> pets;
 
-    public UserDto(Long id, String name, String email, Integer age, List<Pet> pets) {
+    public User(Long id, String name, String email, Integer age, List<Pet> pets) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -28,7 +28,7 @@ public class UserDto {
         this.pets = pets;
     }
 
-    public UserDto()
+    public User()
     {
 
     }
@@ -76,8 +76,8 @@ public class UserDto {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        UserDto userDto = (UserDto) o;
-        return Objects.equals(id, userDto.id) && Objects.equals(name, userDto.name) && Objects.equals(email, userDto.email) && Objects.equals(age, userDto.age) && Objects.equals(pets, userDto.pets);
+        User user = (User) o;
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(age, user.age) && Objects.equals(pets, user.pets);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class UserDto {
 
     @Override
     public String toString() {
-        return "UserDto{" +
+        return "User{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +

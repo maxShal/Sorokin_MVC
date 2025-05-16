@@ -1,5 +1,7 @@
 package org.example.controller;
 
+import org.example.entity.Pet;
+import org.example.mapper.PetDtoMapper;
 import org.example.model.PetDto;
 import org.example.service.PetService;
 import jakarta.validation.Valid;
@@ -14,33 +16,37 @@ import java.util.List;
 @RequestMapping("/api/pets")
 public class PetController {
     private final PetService petService;
+    private final PetDtoMapper mapper;
 
 
-    public PetController(PetService petService) {
+    public PetController(PetService petService, PetDtoMapper mapper) {
         this.petService = petService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<PetDto>  getPetById(@PathVariable Long id)
+    public ResponseEntity<Pet>  getPetById(@PathVariable Long id)
     {
         return new ResponseEntity<>(petService.getPetById(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<PetDto>>  getAllPet()
+    public ResponseEntity<List<Pet>>  getAllPet()
     {
         return new ResponseEntity<>(petService.getAllPets(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<PetDto> createPet(@Valid @RequestBody PetDto pet)
+    public ResponseEntity<Pet> createPet(@Valid @RequestBody PetDto petDto)
     {
+        var pet = mapper.toDto(petDto);
         return new ResponseEntity<>(petService.createPet(pet),HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<PetDto> putPet(@Valid @RequestBody PetDto pet)
+    public ResponseEntity<Pet> putPet(@Valid @RequestBody PetDto petDto)
     {
+        var pet = mapper.toDto(petDto);
         return new ResponseEntity<>(petService.putPet(pet),HttpStatus.OK);
     }
 
