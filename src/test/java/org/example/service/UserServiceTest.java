@@ -37,13 +37,13 @@ class UserServiceTest {
 
     @Test
     void getUserHashMap() throws Exception {
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, List.of());
-        UserDto user_second = new UserDto(2L, "Iban", "test@example.com", 20, List.of());
-        User us = mapper.userDto(user);
-        User us2 = mapper.userDto(user_second);
-        userService.createUser(us);
-        userService.createUser(us2);
-        List<User> userDtoList = List.of(us,us2);
+        User user = new User(1L, "Max", "test@example.com", 20, List.of());
+        User user_second = new User(2L, "Iban", "test@example.com", 20, List.of());
+       /* User us = mapper.userDto(user);
+        User us2 = mapper.userDto(user_second);*/
+        userService.createUser(user);
+        userService.createUser(user_second);
+        List<User> userDtoList = List.of(user,user_second);
         var jsonResponse = mvc.perform(get("/api/users")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -58,10 +58,10 @@ class UserServiceTest {
 
     @Test
     void getUserById() throws Exception {
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, List.of());
-        User us = mapper.userDto(user);
-        userService.createUser(us);
-        String newUserJson = objectMapper.writeValueAsString(us);
+        User user = new User(1L, "Max", "test@example.com", 20, List.of());
+        //User us = mapper.userDto(user);
+        userService.createUser(user);
+        String newUserJson = objectMapper.writeValueAsString(user);
         var jsonResponse = mvc.perform(get("/api/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newUserJson))
@@ -95,9 +95,9 @@ class UserServiceTest {
 
     @Test
     void putUser() throws Exception {
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, List.of());
-        User us = mapper.userDto(user);
-        userService.createUser(us);
+        User user = new User(1L, "Max", "test@example.com", 20, List.of());
+        //User us = mapper.userDto(user);
+        userService.createUser(user);
 
         User updatedUser = new User(1L, "Maxim", "test@example.com", 20, List.of());
         String updatedUserJson = objectMapper.writeValueAsString(updatedUser);
@@ -118,9 +118,9 @@ class UserServiceTest {
 
     @Test
     void deleteUserById() throws Exception {
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, List.of());
-        User us = mapper.userDto(user);
-        userService.createUser(us);
+        User user = new User(1L, "Max", "test@example.com", 20, List.of());
+        //User us = mapper.userDto(user);
+        userService.createUser(user);
         String newUserJson = objectMapper.writeValueAsString(user);
         var userJson = mvc.perform(delete("/api/users/{id}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -135,9 +135,9 @@ class UserServiceTest {
 
     @Test
     void deleteUserByName() throws Exception {
-        UserDto user = new UserDto(1L, "Max", "test@example.com", 20, List.of());
-        User us = mapper.userDto(user);
-        userService.createUser(us);
+        User user = new User(1L, "Max", "test@example.com", 20, List.of());
+        //User us = mapper.userDto(user);
+        userService.createUser(user);
         String newUserJson = objectMapper.writeValueAsString(user);
         var userJson = mvc.perform(delete("/api/users/by-name/{name}", "Max")
                         .contentType(MediaType.APPLICATION_JSON)

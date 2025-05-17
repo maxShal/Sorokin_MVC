@@ -101,13 +101,13 @@ class PetControllerTest {
 
     @Test
     void putPet() throws Exception{
-        PetDto pet = new PetDto(1L, "name", 1L);
+        Pet pet = new Pet(1L, "name", 1L);
         User user = new User(1L, "Max", "test@example.com", 20, new ArrayList<>());
         userService.createUser(user);
-        Pet pe = mapper.toDto(pet);
-        petService.createPet(pe);
+        //Pet pe = mapper.toDto(pet);
+        petService.createPet(pet);
 
-        String petJson = objectMapper.writeValueAsString(pe);
+        String petJson = objectMapper.writeValueAsString(pet);
         var jsonResponse = mvc.perform(put("/api/pets")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(petJson))

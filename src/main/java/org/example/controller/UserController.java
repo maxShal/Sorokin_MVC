@@ -25,30 +25,31 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById( @PathVariable Long id)
+    public ResponseEntity<UserDto> getUserById( @PathVariable Long id)
     {
-        return new ResponseEntity<>(userService.getUserById(id),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.userDto(userService.getUserById(id)),HttpStatus.OK);
     }
 
 
     @GetMapping
-    public ResponseEntity<List<User>> getUsers()
+    public ResponseEntity<List<UserDto>> getUsers()
     {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+        List<User> list = userService.getAllUsers();
+        List<UserDto> users = list.stream()
+                .map(mapper::userDto).toList();
+        return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody UserDto userDto)
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody User user)
     {
-        var user = mapper.userDto(userDto);
-        return new ResponseEntity<>(userService.createUser(user),HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.userDto(userService.createUser(user)),HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<User> putUser(@Valid @RequestBody UserDto userDto)
+    public ResponseEntity<UserDto> putUser(@Valid @RequestBody User user)
     {
-        var user = mapper.userDto(userDto);
-        return new ResponseEntity<>(userService.putUser(user),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.userDto(userService.putUser(user)),HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

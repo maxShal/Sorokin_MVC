@@ -5,16 +5,19 @@ import org.example.mapper.PetDtoMapper;
 import org.example.model.PetDto;
 import org.example.service.PetService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/pets")
 public class PetController {
+    @Autowired
     private final PetService petService;
     private final PetDtoMapper mapper;
 
@@ -25,29 +28,31 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pet>  getPetById(@PathVariable Long id)
+    public ResponseEntity<PetDto>  getPetById(@PathVariable Long id)
     {
-        return new ResponseEntity<>(petService.getPetById(id), HttpStatus.OK);
+        return new ResponseEntity<>(mapper.toDto(petService.getPetById(id)), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Pet>>  getAllPet()
-    {
-        return new ResponseEntity<>(petService.getAllPets(), HttpStatus.OK);
+    public ResponseEntity<List<PetDto>> getAllPets() {
+        List<Pet> pets = petService.getAllPets();
+        List<PetDto> petDtos = pets.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(petDtos, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<Pet> createPet(@Valid @RequestBody PetDto petDto)
+    public ResponseEntity<PetDto> createPet(@Valid @RequestBody Pet pet)
     {
-        var pet = mapper.toDto(petDto);
-        return new ResponseEntity<>(petService.createPet(pet),HttpStatus.CREATED);
+        return new ResponseEntity<>(mapper.toDto(petService.createPet(pet)),HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<Pet> putPet(@Valid @RequestBody PetDto petDto)
+    public ResponseEntity<PetDto> putPet(@Valid @RequestBody Pet pet)
     {
-        var pet = mapper.toDto(petDto);
-        return new ResponseEntity<>(petService.putPet(pet),HttpStatus.OK);
+        return new ResponseEntity<>(mapper.toDto(petService.putPet(pet)),HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
